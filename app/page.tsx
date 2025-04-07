@@ -1,4 +1,4 @@
-import ModeToggle from "@/components/ModeToggel";
+import ModeToggle from "@/components/ModeToggle";
 import { Button } from "@/components/ui/button";
 import {
   SignedIn,
@@ -12,17 +12,7 @@ import Image from "next/image";
 export default function Home() {
   return (
     <div className="mt-4">
-      <SignedOut>
-        <SignInButton mode="modal">
-          <Button>Sign In</Button>
-        </SignInButton>
-
-      </SignedOut>
-      <SignedIn>
-        <UserButton />
-      </SignedIn>
-
-      <ModeToggle/>
+      <h1> content </h1>
     </div>
   );
 }
