@@ -1,12 +1,13 @@
+"use client";
+
 import { BellIcon, HomeIcon, UserIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { SignInButton, UserButton } from "@clerk/nextjs";
-import { currentUser } from "@clerk/nextjs/server";
+import { SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import ModeToggle from "./ModeToggle";
 
-async function DesktopNavbar() {
-  const user = await currentUser();
+function DesktopNavbar() {
+  const { user, isSignedIn } = useUser();
 
   return (
     <div className="hidden md:flex items-center space-x-4">
@@ -19,7 +20,7 @@ async function DesktopNavbar() {
         </Link>
       </Button>
 
-      {user ? (
+      {isSignedIn && user ? (
         <>
           <Button variant="ghost" className="flex items-center gap-2" asChild>
             <Link href="/notifications">
@@ -47,4 +48,5 @@ async function DesktopNavbar() {
     </div>
   );
 }
+
 export default DesktopNavbar;
