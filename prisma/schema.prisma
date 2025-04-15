@@ -35,7 +35,7 @@ model User{
   following Follows[] @relation("follower")
 
   notifications Notification[] @relation("userNotifications")
-  notificationsCreated Notification[] @relation("userNotificationCreated")
+  notificationsCreated Notification[] @relation("notificationCreator")
 
 }
 
@@ -64,7 +64,7 @@ model Comment{
   // Relations
   author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
   post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
-   
+  notifications Notification[]
    @@index([postId, authorId]) // compositr index for faster queries
   
 }
@@ -84,4 +84,35 @@ model Like{
   @@unique([postId, userId]) // prevenr same user likes more than one
 
 }
-model 
+model Follows{
+  followerId String
+  followingId String
+  createAt DateTime @default(now())
+  follower User @relation("follower",fields: [followerId],references: [id], onDelete: Cascade)
+  following User @relation("following",fields: [followingId],references: [id], onDelete: Cascade)
+  @@index([followerId, followingId]) // composite index for faster queries
+  @@id([followerId, followingId])
+}
+
+model Notification{
+  id String @id @default(cuid())
+  userId String
+  creatorId String
+  type NotificationType
+  read Boolean @default(false)
+  postId String?
+  commentId String?
+  createdAt DateTime @default(now())
+// Relations
+  user User @relation("userNotifications",fields: [userId], references: [id],onDelete:Cascade)
+  creator User @relation("notificationCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+
+  post Post? @relation(fields: [postId], references: [id], onDelete: Cascade)
+  comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+}
+enum NotificationType {
+  LIKE
+  COMMENT 
+  FOLLOW
+}
