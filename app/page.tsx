@@ -1,6 +1,7 @@
 import CreatePost from "@/components/CreatePost";
 import ModeToggle from "@/components/ModeToggle";
 import { Button } from "@/components/ui/button";
+import WhoToFollow from "@/components/WhoToFollow";
 import prisma from "@/lib/prisma";
 import {
   SignedIn,
@@ -22,7 +23,7 @@ export default async function Home() {
         {user && <CreatePost/>}
       </div>
       <div className= " hidden lg:col-span-4 lg:block sticky top-20"> 
-        Who to follow section
+        <WhoToFollow/>
       </div>
       
       
