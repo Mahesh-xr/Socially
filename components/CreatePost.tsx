@@ -22,6 +22,7 @@ const CreatePost = () => {
 
     try {
         const result = await createPost(content,imageUrl)
+        if(!result) return
         if(result.success){
             // reset
             setContent("")
