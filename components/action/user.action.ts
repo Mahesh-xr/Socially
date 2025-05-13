@@ -145,3 +145,11 @@ export async function toggleFollow(targetId: string) {
     return {sucess:false, error:"Error while trying to follow"}
   }
 }
+
+
+// const Revalidatepath = ({path}) => {
+//   revalidatePath(path)
+  
+// }
+
+// export default Revalidatepath
