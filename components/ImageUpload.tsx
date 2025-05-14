@@ -14,6 +14,7 @@ interface imageUploadProps {
 
 function ImageUpload({endpoint,onChange,value}:imageUploadProps) {
     if (value) {
+      console.log(value)
         return (
           <div className="relative size-40">
             <img src={value} alt="Upload" className="rounded-md size-40 object-cover" />

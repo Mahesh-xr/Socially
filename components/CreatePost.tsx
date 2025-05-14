@@ -1,6 +1,6 @@
 "use client";
 import { useUser } from "@clerk/nextjs";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Card, CardContent } from "./ui/card";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { Textarea } from "./ui/textarea";
@@ -8,40 +8,57 @@ import { ImageIcon, Loader2Icon, SendIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { createPost } from "./action/post.action";
 import toast from "react-hot-toast";
-import ImageUpload from "./ImageUpload";
-
 
 const CreatePost = () => {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { user } = useUser();
+  const [imageURl, setImageUrl] = useState("")
   const [content, setContent] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [isPosting, setIsPosting] = useState(false);
   const [showImageUpload, setShowImageUpload] = useState(false);
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+    }
+  };
+
   const handleSubmit = async () => {
-    if(!content.trim() && !imageUrl) return 
-    setIsPosting(true)
+    if (!content.trim() && !imageFile) return;
+    setIsPosting(true);
 
     try {
-        const result = await createPost(content,imageUrl)
-        if(!result) return
-        if(result.success){
-            // reset
-            setContent("")
-            setImageUrl("")
-            setShowImageUpload(false)
-            toast.success("Post Created Successfully")
-        }
-        
-    } catch (error) {
-        toast.error("Failed to create a post")
-        console.log("Failed to create a Post:" , error)
-        
-    }
-    finally{
-        setIsPosting(false)
-    }
+      let uploadedImageUrl = "";
 
+      if (imageFile) {
+        const data = new FormData();
+        data.set("file", imageFile);
+
+        const uploadRequest = await fetch("/api/files", {
+          method: "POST",
+          body: data,
+        });
+
+        const response = await uploadRequest.json();
+        uploadedImageUrl = response.url; 
+        setImageUrl(uploadedImageUrl)// Adjust this key based on your API response
+      }
+
+      const result = await createPost(content, imageURl);
+      if (result?.success) {
+        setContent("");
+        setImageFile(null);
+        setShowImageUpload(false);
+        toast.success("Post Created Successfully");
+      }
+    } catch (error) {
+      toast.error("Failed to create a post");
+      console.error("Failed to create a post:", error);
+    } finally {
+      setIsPosting(false);
+    }
   };
 
   return (
@@ -61,20 +78,26 @@ const CreatePost = () => {
             />
           </div>
 
-       {/* Handle Image */}
-       {(showImageUpload || imageUrl)&& (
-        <div className="border rounded-lg p-4">
-          <ImageUpload
-          endpoint="postImage"
-          value={imageUrl}
-          onChange={url=>{
-            setImageUrl(url)
-            if(!url) setShowImageUpload(false)
-          }}
-          />
-        </div>
-       )}
-
+          {(showImageUpload || imageFile) && (
+            <div>
+              <input
+                type="file"
+                ref={fileInputRef}
+                className="absolute right-[9999px]"
+                onChange={handleChange}
+          //        {/* <ImageUpload
+          //         endpoint="postImage"
+          //         value={imageUrl}
+          //         onChange={url=>{
+          //        setImageUrl(url)
+          //   if(!url) setShowImageUpload(false)
+          // }}
+          //             /> */}
+ 
+              />
+              {imageFile && <p className="text-sm mt-2">{imageFile.name}</p>}
+            </div>
+          )}
 
           <div className="flex items-center justify-between border-t pt-4">
             <div className="flex space-x-2">
@@ -83,7 +106,12 @@ const CreatePost = () => {
                 variant="ghost"
                 size="sm"
                 className="text-muted-foreground hover:text-primary"
-                onClick={() => setShowImageUpload(!showImageUpload)}
+                onClick={() => {
+                  if (fileInputRef.current) {
+                    fileInputRef.current.click();
+                  }
+                  setShowImageUpload(true);
+                }}
                 disabled={isPosting}
               >
                 <ImageIcon className="size-4 mr-2" />
@@ -93,7 +121,7 @@ const CreatePost = () => {
             <Button
               className="flex items-center"
               onClick={handleSubmit}
-              disabled={(!content.trim() && !imageUrl) || isPosting}
+              disabled={(!content.trim() && !imageFile) || isPosting}
             >
               {isPosting ? (
                 <>
