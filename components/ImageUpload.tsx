@@ -8,13 +8,11 @@ import React from 'react'
 interface imageUploadProps {
     onChange:(url:string) => void
     value:string;
-    endpoint: "postImage"
 
 }
 
-function ImageUpload({endpoint,onChange,value}:imageUploadProps) {
+function ImageUpload({onChange,value}:imageUploadProps) {
     if (value) {
-      console.log(value)
         return (
           <div className="relative size-40">
             <img src={value} alt="Upload" className="rounded-md size-40 object-cover" />
@@ -30,18 +28,7 @@ function ImageUpload({endpoint,onChange,value}:imageUploadProps) {
       }
   
   
-    return (
-    <div>
-     <UploadDropzone
-     endpoint={endpoint}
-     onClientUploadComplete={(res)=>{
-        onChange(res?.[0].url)
-     }}
-     onUploadError={error=>{
-        console.log(error)
-     }}/>      
-    </div>
-  )
+   
 }
 
 export default ImageUpload;

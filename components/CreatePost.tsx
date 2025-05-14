@@ -4,51 +4,69 @@ import React, { useRef, useState } from "react";
 import { Card, CardContent } from "./ui/card";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { Textarea } from "./ui/textarea";
-import { ImageIcon, Loader2Icon, SendIcon } from "lucide-react";
+import { ImageIcon, Loader2Icon, SendIcon, XIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { createPost } from "./action/post.action";
 import toast from "react-hot-toast";
 
 const CreatePost = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [isImageUploading, setIsImageUploading] = useState(false);
+
   const { user } = useUser();
-  const [imageURl, setImageUrl] = useState("")
+  const [imageUrl, setImageUrl] = useState("");
   const [content, setContent] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isPosting, setIsPosting] = useState(false);
   const [showImageUpload, setShowImageUpload] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImageFile(file);
-    }
-  };
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (!file) {
+    console.log("image not found ")
+    return
+
+  }
+
+  setImageFile(file); // keep this if you want to show filename
+
+  const data = new FormData();
+  data.set("file", file); // use file directly here
+  setIsImageUploading(true)
+
+
+  try {
+    const uploadRequest = await fetch("/api/files", {
+      method: "POST",
+      body: data,
+    });
+    setShowImageUpload(true)
+
+
+    const response = await uploadRequest.json();
+    const uploadedImageUrl = response.url;
+
+    setImageUrl(uploadedImageUrl);
+    setIsImageUploading(false)
+
+    console.log("Image URL: ", uploadedImageUrl);
+  } catch (error) {
+    console.error("Image upload failed", error);
+    toast.error("Image upload failed");
+  }
+};
+
 
   const handleSubmit = async () => {
     if (!content.trim() && !imageFile) return;
     setIsPosting(true);
 
     try {
-      let uploadedImageUrl = "";
-
-      if (imageFile) {
-        const data = new FormData();
-        data.set("file", imageFile);
-
-        const uploadRequest = await fetch("/api/files", {
-          method: "POST",
-          body: data,
-        });
-
-        const response = await uploadRequest.json();
-        uploadedImageUrl = response.url; 
-        setImageUrl(uploadedImageUrl)// Adjust this key based on your API response
-      }
-
-      const result = await createPost(content, imageURl);
+      console.log("Image URl: ", imageUrl);
+      const result = await createPost(content, imageUrl);
       if (result?.success) {
         setContent("");
+        setImageUrl("")
         setImageFile(null);
         setShowImageUpload(false);
         toast.success("Post Created Successfully");
@@ -78,26 +96,38 @@ const CreatePost = () => {
             />
           </div>
 
-          {(showImageUpload || imageFile) && (
             <div>
               <input
                 type="file"
                 ref={fileInputRef}
                 className="absolute right-[9999px]"
                 onChange={handleChange}
-          //        {/* <ImageUpload
-          //         endpoint="postImage"
-          //         value={imageUrl}
-          //         onChange={url=>{
-          //        setImageUrl(url)
-          //   if(!url) setShowImageUpload(false)
-          // }}
-          //             /> */}
- 
               />
+              {imageUrl && showImageUpload && (
+                <div className="relative size-40">
+
+                  <img
+                    src={imageUrl}
+                    alt="Upload"
+                    className="rounded-md size-40 object-cover"
+                  />
+                  <button
+                    onClick={() => {
+                      setImageUrl("");
+                      setImageFile(null);
+                      setShowImageUpload(false);
+                    }}
+                    className="absolute top-0 right-0 p-1 bg-red-500 rounded-full shadow-sm"
+                    type="button"
+                  >
+                    <XIcon className="h-4 w-4 text-white" />
+                  </button>
+                </div>
+              )}
+
               {imageFile && <p className="text-sm mt-2">{imageFile.name}</p>}
             </div>
-          )}
+          
 
           <div className="flex items-center justify-between border-t pt-4">
             <div className="flex space-x-2">
@@ -115,7 +145,16 @@ const CreatePost = () => {
                 disabled={isPosting}
               >
                 <ImageIcon className="size-4 mr-2" />
-                Photo
+                {isImageUploading? 
+                (
+                <>
+                  <Loader2Icon className="size-4 mr-2 animate-spin" />
+                  Uploading...
+                </>
+              ) 
+                : 
+
+                "photo" }
               </Button>
             </div>
             <Button

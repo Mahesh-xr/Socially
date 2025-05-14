@@ -10,7 +10,6 @@ const Sidebar = async () => {
   if (!authUser) return <SidebarClient />;
 
   const user = await getUserByClerkId(authUser.id);
-  console.dir("New user name :"+authUser.id)
   if (!user) return null;
   
   return <SidebarClient user={user} />;

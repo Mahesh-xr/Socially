@@ -49,7 +49,7 @@ const SidebarClient = ({ user }: { user?: any }) => {
               className="flex flex-col items-center justify-center"
             >
               <Avatar className="w-20 h-20 border-2 ">
-                <AvatarImage src={user.image || "/avatar.png"} />
+                <AvatarImage src={user?.image || "/avatar.png"} />
               </Avatar>
 
               <div className="mt-4 space-y-1">
