@@ -7,9 +7,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "prisma generate"
   },
-  "packageManager": "11.1.0",
+  "packageManager": "npm@11.1.0",
   "overrides": {
     "react": "$react",
     "react-dom": "$react-dom"
