@@ -10,16 +10,25 @@ import {
   UserIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { useState } from "react";
-import { useAuth, SignInButton, SignOutButton } from "@clerk/nextjs";
+import { useAuth, SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
 import { useTheme } from "next-themes";
 import Link from "next/link";
+import WhoToFollow from "./WhoToFollow";
 
 function MobileNavbar() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const { isSignedIn } = useAuth();
+  const [showWhoToFollow,setShowWhoToFollow] = useState(false)
+  // const { isSignedIn } = useAuth();
   const { theme, setTheme } = useTheme();
+  const { user, isSignedIn } = useUser();
 
   return (
     <div className="flex md:hidden items-center space-x-2">
@@ -45,29 +54,65 @@ function MobileNavbar() {
             <SheetTitle>Menu</SheetTitle>
           </SheetHeader>
           <nav className="flex flex-col space-y-4 mt-6">
-            <Button variant="ghost" className="flex items-center gap-3 justify-start" asChild>
-              <Link href="./">
+            <Button
+              variant="ghost"
+              className="flex items-center gap-3 justify-start"
+              asChild
+            >
+              <Link href="/">
                 <HomeIcon className="w-4 h-4" />
                 Home
               </Link>
             </Button>
 
+
+                
+
             {isSignedIn ? (
               <>
-                <Button variant="ghost" className="flex items-center gap-3 justify-start" asChild>
+{/* 
+                 <Button
+                  variant="ghost"
+                  className="flex items-center gap-3 justify-start"
+                  onClick={() => setShowWhoToFollow(!showWhoToFollow)}
+                  
+                >
+                  
+                    <UserIcon className="w-4 h-4" />
+                    Follow
+                  
+                </Button> 
+                {showWhoToFollow&& <WhoToFollow/>}          */}
+                <Button
+                  variant="ghost"
+                  className="flex items-center gap-3 justify-start"
+                  asChild
+                >
                   <Link href="/notifications">
                     <BellIcon className="w-4 h-4" />
                     Notifications
                   </Link>
                 </Button>
-                <Button variant="ghost" className="flex items-center gap-3 justify-start" asChild>
-                  <Link href="/profile">
+                <Button
+                  variant="ghost"
+                  className="flex items-center gap-3 justify-start"
+                  asChild
+                >
+                  <Link
+                    href={`/profile/${
+                      user.username ??
+                      user.emailAddresses[0].emailAddress.split("@")[0]
+                    }`}
+                  >
                     <UserIcon className="w-4 h-4" />
                     Profile
                   </Link>
                 </Button>
                 <SignOutButton>
-                  <Button variant="ghost" className="flex items-center gap-3 justify-start w-full">
+                  <Button
+                    variant="ghost"
+                    className="flex items-center gap-3 justify-start w-full"
+                  >
                     <LogOutIcon className="w-4 h-4" />
                     Logout
                   </Button>

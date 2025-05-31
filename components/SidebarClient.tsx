@@ -12,7 +12,7 @@ import { LinkIcon, MapPinIcon } from 'lucide-react';
 const SidebarClient = ({ user }: { user?: any }) => {
   if (!user) {
     return (
-      <div className="sticky top-20">
+      <div className="w-100 flex items-center justify-center ">
         <Card>
           <CardHeader>
             <CardTitle className="text-center text-xl font-semibold">
@@ -40,7 +40,7 @@ const SidebarClient = ({ user }: { user?: any }) => {
   }
 
   return (
-    <div className="sticky top-20">
+    <div className="sticky top-20 hidden lg:block ">
       <Card>
         <CardContent className="pt-6">
           <div className="flex flex-col items-center text-center">
