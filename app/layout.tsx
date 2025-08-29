@@ -19,11 +19,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Socially",
-<<<<<<< HEAD
   description: "Simple yet effictive social media app",
-=======
-  description: "Simple yet Effective Social media app",
->>>>>>> 58f52d4effa4c47000d1ad8c365eb5072ded1498
 };
 
 export default function RootLayout({

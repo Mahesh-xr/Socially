@@ -22,9 +22,4 @@ export const config = {
     // Always run for API routes
     '/(api|trpc)(.*)',
   ],
-<<<<<<< HEAD
 }
-=======
-};
-
->>>>>>> 58f52d4effa4c47000d1ad8c365eb5072ded1498

@@ -22,10 +22,7 @@
       "@/*": ["./*"]
     }
   },
-<<<<<<< HEAD
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "next.config.mjs"],
-=======
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", ".next/types/app/profile/[username]/page.tsx"],
->>>>>>> 58f52d4effa4c47000d1ad8c365eb5072ded1498
+
   "exclude": ["node_modules"]
 }

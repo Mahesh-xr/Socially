@@ -26,13 +26,10 @@ import WhoToFollow from "./WhoToFollow";
 function MobileNavbar() {
   const { user, isSignedIn } = useUser();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-<<<<<<< HEAD
   const [showWhoToFollow,setShowWhoToFollow] = useState(false)
   // const { isSignedIn } = useAuth();
-=======
->>>>>>> 58f52d4effa4c47000d1ad8c365eb5072ded1498
+
   const { theme, setTheme } = useTheme();
-  const { user, isSignedIn } = useUser();
 
   return (
     <div className="flex md:hidden items-center space-x-2">
@@ -97,7 +94,6 @@ function MobileNavbar() {
                     Notifications
                   </Link>
                 </Button>
-<<<<<<< HEAD
                 <Button
                   variant="ghost"
                   className="flex items-center gap-3 justify-start"
@@ -109,12 +105,6 @@ function MobileNavbar() {
                       user.emailAddresses[0].emailAddress.split("@")[0]
                     }`}
                   >
-=======
-                <Button variant="ghost" className="flex items-center gap-3 justify-start" asChild>
-                  <Link  href={`/profile/${
-                user.username ?? user.emailAddresses[0].emailAddress.split("@")[0]
-              }`} >
->>>>>>> 58f52d4effa4c47000d1ad8c365eb5072ded1498
                     <UserIcon className="w-4 h-4" />
                     Profile
                   </Link>
